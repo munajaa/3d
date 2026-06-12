@@ -1,6 +1,6 @@
 {
   "name": "3D 2025/2026 TSK",
-  "description": "Jednostavna galerija slika",
+  "description": "Jednostavna galerija slika koja ucitava slike iz lokalnog foldera.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

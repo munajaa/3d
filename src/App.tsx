@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, X, Image as ImageIcon, Video, UploadCloud, RefreshCw, ArrowDown, Truck, Route, MapPin, GraduationCap, Calendar, Camera, DownloadCloud } from 'lucide-react';
+import { Download, X, Image as ImageIcon, Video, UploadCloud, RefreshCw, ArrowDown, Truck, Route, MapPin, GraduationCap, Calendar, Camera, DownloadCloud, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -11,6 +11,49 @@ export default function App() {
   const [selectedMedia, setSelectedMedia] = useState<{ url: string; name: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const handleNext = (e?: React.MouseEvent | React.TouchEvent) => {
+    e?.stopPropagation();
+    if (!selectedMedia) return;
+    const currentIndex = mediaFiles.findIndex(m => m.url === selectedMedia.url);
+    const nextIndex = (currentIndex + 1) % mediaFiles.length;
+    setSelectedMedia(mediaFiles[nextIndex]);
+  };
+
+  const handlePrev = (e?: React.MouseEvent | React.TouchEvent) => {
+    e?.stopPropagation();
+    if (!selectedMedia) return;
+    const currentIndex = mediaFiles.findIndex(m => m.url === selectedMedia.url);
+    const prevIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+    setSelectedMedia(mediaFiles[prevIndex]);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedMedia) return;
+      if (e.key === 'ArrowRight') handleNext();
+      if (e.key === 'ArrowLeft') handlePrev();
+      if (e.key === 'Escape') setSelectedMedia(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMedia, mediaFiles]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 50) handleNext();
+    if (distance < -50) handlePrev();
+  };
 
   const loadMedia = () => {
     setLoading(true);
@@ -143,9 +186,9 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-lg text-zinc-400 sm:text-xl max-w-2xl px-4 font-medium leading-relaxed"
+            className="text-lg text-zinc-400 sm:text-xl max-w-2xl px-4 font-bold italic leading-relaxed"
           >
-            Gotov je 3. razred, škola je iza nas, a prave ceste tek čekaju! 🚛 Ovdje čuvamo sve naše slike s druženja, norijade, fešti i praksi na jednom mjestu.
+            "Đabe konji pod haubom kad su magarci za volanom." 🚛
           </motion.p>
           
           <motion.div 
@@ -175,25 +218,6 @@ export default function App() {
               <span>Pregledaj Galeriju</span>
               <ArrowDown className="h-4 w-4" />
             </button>
-            {mediaFiles.length > 0 && (
-              <button
-                onClick={handleDownloadAll}
-                disabled={isDownloadingAll}
-                className="flex items-center gap-2 rounded-full border-2 border-yellow-500 bg-transparent px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-yellow-500 transition-all hover:bg-yellow-500 hover:text-zinc-950 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:scale-95"
-              >
-                {isDownloadingAll ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    <span>Pakiranje...</span>
-                  </>
-                ) : (
-                  <>
-                    <DownloadCloud className="h-4 w-4" />
-                    <span>Preuzmi Sve ({mediaFiles.length})</span>
-                  </>
-                )}
-              </button>
-            )}
           </motion.div>
         </div>
       </section>
@@ -229,7 +253,7 @@ export default function App() {
             </button>
           </motion.div>
         ) : (
-          <div className="columns-1 gap-4 space-y-4 sm:columns-2 md:columns-3 lg:columns-4 xl:gap-6 xl:space-y-6">
+          <div className="columns-2 gap-2 space-y-2 sm:gap-4 sm:space-y-4 md:columns-3 lg:columns-4 xl:gap-6 xl:space-y-6">
             <AnimatePresence>
               {mediaFiles.map((media, idx) => (
                 <motion.div
@@ -287,6 +311,33 @@ export default function App() {
             </AnimatePresence>
           </div>
         )}
+        
+        {/* Bottom Download All Button */}
+        {!loading && mediaFiles.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-16 sm:mt-24 flex justify-center border-t border-dashed border-zinc-800/50 pt-10"
+          >
+            <button
+              onClick={handleDownloadAll}
+              disabled={isDownloadingAll}
+              className="flex w-full sm:w-auto min-w-[300px] items-center justify-center gap-3 rounded-xl bg-zinc-900 border border-zinc-800 px-8 py-5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-zinc-800 hover:border-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:scale-95 shadow-xl shadow-black/50"
+            >
+              {isDownloadingAll ? (
+                <>
+                  <RefreshCw className="h-5 w-5 text-yellow-500 animate-spin" />
+                  <span>Pakiranje u ZIP...</span>
+                </>
+              ) : (
+                <>
+                  <DownloadCloud className="h-5 w-5 text-yellow-500" />
+                  <span>Preuzmi Sve Slike ({mediaFiles.length})</span>
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
       </main>
 
       {/* Lightbox / Modal */}
@@ -297,22 +348,32 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-2xl"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-0 sm:p-4 backdrop-blur-2xl"
             onClick={() => setSelectedMedia(null)}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           >
-            {/* Controls */}
-            <div className="absolute top-6 flex w-full max-w-7xl items-center justify-between px-6 z-10 text-white">
-              <span className="font-mono text-xs tracking-widest text-zinc-500 opacity-0 sm:opacity-100 flex items-center gap-2 uppercase">
-                {isVideo(selectedMedia.name) ? <Video className="h-4 w-4 text-yellow-500" /> : <ImageIcon className="h-4 w-4 text-yellow-500" />}
-                {selectedMedia.name}
+            {/* Top Header Mobile / Desktop */}
+            <div className="absolute top-0 inset-x-0 flex items-center justify-between p-4 sm:p-6 sm:top-6 sm:max-w-7xl sm:mx-auto z-20 bg-gradient-to-b from-black/80 to-transparent sm:bg-none text-white transition-opacity">
+              <span className="font-mono text-xs tracking-widest text-zinc-400 sm:text-zinc-500 opacity-100 flex items-center gap-2 uppercase truncate max-w-[50%]">
+                {isVideo(selectedMedia.name) ? <Video className="h-4 w-4 text-yellow-500 shrink-0" /> : <ImageIcon className="h-4 w-4 text-yellow-500 shrink-0" />}
+                <span className="truncate">{selectedMedia.name}</span>
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={(e) => handleDownload(e, selectedMedia.url, selectedMedia.name)}
-                  className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/80 py-2.5 px-6 font-bold uppercase tracking-wider backdrop-blur-md transition-all hover:border-yellow-500 hover:text-yellow-500 active:scale-95"
+                  className="hidden sm:flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/80 py-2.5 px-6 font-bold uppercase tracking-wider backdrop-blur-md transition-all hover:border-yellow-500 hover:text-yellow-500 active:scale-95"
                 >
                   <Download className="h-4 w-4" />
                   <span className="text-sm">Preuzmi</span>
+                </button>
+                {/* Mobile download btn */}
+                <button
+                  onClick={(e) => handleDownload(e, selectedMedia.url, selectedMedia.name)}
+                  className="flex sm:hidden h-11 w-11 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/80 backdrop-blur-md transition-all hover:bg-yellow-500 hover:text-black active:scale-95"
+                >
+                  <Download className="h-5 w-5" />
                 </button>
                 <button
                   onClick={(e) => {
@@ -327,27 +388,47 @@ export default function App() {
               </div>
             </div>
 
+            {/* Left/Right Nav Desktop */}
+            <div className="hidden sm:flex absolute inset-y-0 left-4 items-center z-10">
+              <button 
+                onClick={handlePrev} 
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-black/50 text-white hover:bg-yellow-500 hover:text-black transition-all backdrop-blur border border-white/10 active:scale-90 opacity-70 hover:opacity-100"
+              >
+                <ChevronLeft className="h-8 w-8 ml-[-2px]" />
+              </button>
+            </div>
+            <div className="hidden sm:flex absolute inset-y-0 right-4 items-center z-10">
+              <button 
+                onClick={handleNext} 
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-black/50 text-white hover:bg-yellow-500 hover:text-black transition-all backdrop-blur border border-white/10 active:scale-90 opacity-70 hover:opacity-100"
+              >
+                <ChevronRight className="h-8 w-8 mr-[-2px]" />
+              </button>
+            </div>
+
             {/* Enlarged Media */}
             <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.98, opacity: 0, y: -10 }}
+              key={selectedMedia.url}
+              initial={{ scale: 0.95, opacity: 0, x: 20 }}
+              animate={{ scale: 1, opacity: 1, x: 0 }}
+              exit={{ scale: 0.95, opacity: 0, x: -20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200, mass: 0.5 }}
-              className="relative flex max-h-[85vh] max-w-[95vw] mt-12 items-center justify-center"
+              className="relative flex h-[100dvh] sm:h-auto sm:max-h-[85vh] w-full sm:max-w-[95vw] sm:mt-12 items-center justify-center"
+              onClick={handleNext}
             >
                {isVideo(selectedMedia.name) ? (
                  <video
                   src={selectedMedia.url}
                   controls
                   autoPlay
-                  className="max-h-full max-w-full rounded-xl shadow-2xl ring-1 ring-white/10 outline-none bg-black/50"
+                  className="max-h-[80vh] sm:max-h-full max-w-full sm:rounded-xl shadow-2xl ring-1 ring-white/10 outline-none bg-black"
                   onClick={(e) => e.stopPropagation()}
                 />
                ) : (
                  <img
                   src={selectedMedia.url}
                   alt={selectedMedia.name}
-                  className="max-h-full max-w-full rounded-xl object-contain shadow-2xl ring-1 ring-white/10 bg-black/50"
+                  className="max-h-[80vh] w-auto max-w-[100vw] sm:max-w-full sm:rounded-xl object-contain shadow-2xl sm:ring-1 sm:ring-white/10 bg-transparent sm:bg-black/50"
                   onClick={(e) => e.stopPropagation()}
                 />
                )}
