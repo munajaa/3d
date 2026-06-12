@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, X, Image as ImageIcon, Grid, Video, UploadCloud, RefreshCw } from 'lucide-react';
+import { Download, X, Image as ImageIcon, Grid, Video, UploadCloud, RefreshCw, ArrowDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 const isVideo = (url: string) => /\.(mov|mp4|webm|avi|mkv)$/i.test(url);
@@ -82,8 +82,53 @@ export default function App() {
         </div>
       </header>
 
+      {/* Hero Section */}
+      <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 py-20 text-center sm:px-6">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/30 via-[#050505] to-[#050505]" />
+        
+        <div className="relative z-10 mx-auto max-w-3xl flex flex-col items-center gap-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-tr from-neutral-800 to-neutral-700 text-white shadow-2xl ring-1 ring-white/10"
+          >
+            <Grid className="h-10 w-10" />
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display text-5xl font-bold tracking-tight text-white mb-2 sm:text-7xl"
+          >
+            3D 2025/2026<br /><span className="text-neutral-500">TSK Galerija</span>
+          </motion.h1>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-lg text-neutral-400 sm:text-xl max-w-2xl px-4"
+          >
+            Pregledajte sve slike i videoprojekte sa raznih događanja okupljene na jednom mjestu.
+          </motion.p>
+          
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            onClick={() => document.getElementById('galerija')?.scrollIntoView({ behavior: 'smooth' })}
+            className="mt-6 flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold text-black transition-transform hover:scale-105 active:scale-95"
+          >
+            <span>Pogledaj Galeriju</span>
+            <ArrowDown className="h-4 w-4" />
+          </motion.button>
+        </div>
+      </section>
+
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
+      <main id="galerija" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-24 relative z-10">
         {loading ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <div className="flex flex-col items-center gap-4">
