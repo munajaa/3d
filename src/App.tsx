@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Download, X, Image as ImageIcon, Video, UploadCloud, RefreshCw, ArrowDown, Truck, Route, MapPin, GraduationCap, Calendar, Camera } from 'lucide-react';
+import { Download, X, Image as ImageIcon, Video, UploadCloud, RefreshCw, ArrowDown, Truck, Route, MapPin, GraduationCap, Calendar, Camera, DownloadCloud } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const isVideo = (url: string) => /\.(mov|mp4|webm|avi|mkv)$/i.test(url);
 
@@ -8,6 +10,7 @@ export default function App() {
   const [mediaFiles, setMediaFiles] = useState<{ url: string; name: string }[]>([]);
   const [selectedMedia, setSelectedMedia] = useState<{ url: string; name: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
 
   const loadMedia = () => {
     setLoading(true);
@@ -43,6 +46,33 @@ export default function App() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadAll = async () => {
+    if (mediaFiles.length === 0 || isDownloadingAll) return;
+    setIsDownloadingAll(true);
+    try {
+      const zip = new JSZip();
+      
+      const promises = mediaFiles.map(async (media) => {
+        try {
+          const response = await fetch(media.url);
+          const blob = await response.blob();
+          zip.file(media.name, blob);
+        } catch (err) {
+          console.error(`Failed to fetch ${media.name}`, err);
+        }
+      });
+      
+      await Promise.all(promises);
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      saveAs(zipBlob, '3D-Maturanti-Galerija.zip');
+    } catch (error) {
+      console.error('Error creating zip:', error);
+      alert('Došlo je do greške prilikom preuzimanja.');
+    } finally {
+      setIsDownloadingAll(false);
+    }
   };
 
   return (
@@ -115,7 +145,7 @@ export default function App() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg text-zinc-400 sm:text-xl max-w-2xl px-4 font-medium leading-relaxed"
           >
-            Đabe konji pod haubom kad su magarci za volanom 😉
+            Gotov je 3. razred, škola je iza nas, a prave ceste tek čekaju! 🚛 Ovdje čuvamo sve naše slike s druženja, norijade, fešti i praksi na jednom mjestu.
           </motion.p>
           
           <motion.div 
@@ -132,16 +162,39 @@ export default function App() {
             </div>
           </motion.div>
           
-          <motion.button
+          <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            onClick={() => document.getElementById('galerija')?.scrollIntoView({ behavior: 'smooth' })}
-            className="mt-6 flex items-center gap-2 rounded-full bg-yellow-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 transition-all hover:bg-yellow-400 hover:shadow-xl hover:shadow-yellow-500/20 hover:-translate-y-0.5 active:scale-95"
+            className="mt-6 flex flex-wrap items-center justify-center gap-4"
           >
-            <span>Pregledaj Galeriju</span>
-            <ArrowDown className="h-4 w-4" />
-          </motion.button>
+            <button
+              onClick={() => document.getElementById('galerija')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-2 rounded-full bg-yellow-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 transition-all hover:bg-yellow-400 hover:shadow-xl hover:shadow-yellow-500/20 hover:-translate-y-0.5 active:scale-95"
+            >
+              <span>Pregledaj Galeriju</span>
+              <ArrowDown className="h-4 w-4" />
+            </button>
+            {mediaFiles.length > 0 && (
+              <button
+                onClick={handleDownloadAll}
+                disabled={isDownloadingAll}
+                className="flex items-center gap-2 rounded-full border-2 border-yellow-500 bg-transparent px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-yellow-500 transition-all hover:bg-yellow-500 hover:text-zinc-950 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 active:scale-95"
+              >
+                {isDownloadingAll ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    <span>Pakiranje...</span>
+                  </>
+                ) : (
+                  <>
+                    <DownloadCloud className="h-4 w-4" />
+                    <span>Preuzmi Sve ({mediaFiles.length})</span>
+                  </>
+                )}
+              </button>
+            )}
+          </motion.div>
         </div>
       </section>
 
