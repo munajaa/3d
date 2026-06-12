@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, X, Image as ImageIcon, Grid, Video, UploadCloud, RefreshCw, ArrowDown } from 'lucide-react';
+import { Download, X, Image as ImageIcon, Video, UploadCloud, RefreshCw, ArrowDown, Truck, Route, MapPin, GraduationCap, Calendar, Camera } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 const isVideo = (url: string) => /\.(mov|mp4|webm|avi|mkv)$/i.test(url);
@@ -46,34 +46,35 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] font-sans text-neutral-200 selection:bg-white/20">
-      {/* Premium Header */}
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#050505]/80 px-6 py-5 backdrop-blur-xl transition-all">
+    <div className="min-h-screen bg-zinc-950 font-sans text-zinc-200 selection:bg-yellow-500/30">
+      {/* Industrial Header */}
+      <div className="h-1.5 w-full bg-[repeating-linear-gradient(45deg,#eab308,#eab308_10px,#000000_10px,#000000_20px)]" />
+      <header className="sticky top-0 z-30 border-b border-zinc-900 bg-zinc-950/80 px-6 py-4 backdrop-blur-xl transition-all">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-neutral-800 to-neutral-700 text-white shadow-inner ring-1 ring-white/10">
-              <Grid className="h-6 w-6" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-500 text-zinc-950 shadow-md ring-1 ring-yellow-400">
+              <Truck className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-bold tracking-tight text-white">
-                3D 2025/2026 TSK
+              <h1 className="font-display text-2xl font-bold tracking-tight text-white uppercase">
+                3.D 2025/2026 TSK
               </h1>
-              <p className="text-xs font-semibold tracking-[0.2em] text-neutral-400 uppercase mt-0.5">
-                Statička Galerija
+              <p className="text-xs font-bold tracking-[0.2em] text-yellow-500 uppercase mt-0.5">
+                Maturanti • Vozači
               </p>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
             {mediaFiles.length > 0 && (
-              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-neutral-300 backdrop-blur-md">
-                <ImageIcon className="h-4 w-4 opacity-70" />
+              <div className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900 px-4 py-1.5 text-sm font-bold text-zinc-300">
+                <ImageIcon className="h-4 w-4 text-yellow-500" />
                 <span>{mediaFiles.length}</span>
               </div>
             )}
             <button
               onClick={loadMedia}
-              className="flex items-center justify-center rounded-full border border-white/10 bg-white/5 p-2 text-white hover:bg-white/10 transition-colors active:scale-95"
+              className="flex items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 hover:bg-zinc-800 hover:text-yellow-500 transition-colors active:scale-95"
               title="Osvježi galeriju"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -83,45 +84,62 @@ export default function App() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 py-20 text-center sm:px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/30 via-[#050505] to-[#050505]" />
+      <section className="relative flex min-h-[75vh] items-center justify-center overflow-hidden px-4 py-20 text-center sm:px-6">
+        <div className="absolute inset-0 bg-[#09090b]">
+           <div className="absolute left-1/2 top-0 bottom-0 w-24 -translate-x-1/2 bg-zinc-900/30" />
+           <div className="absolute left-1/2 top-0 bottom-0 w-0 border-l-[6px] border-dashed border-yellow-500/10 -translate-x-1/2" />
+        </div>
         
-        <div className="relative z-10 mx-auto max-w-3xl flex flex-col items-center gap-6">
+        <div className="relative z-10 mx-auto max-w-4xl flex flex-col items-center gap-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-tr from-neutral-800 to-neutral-700 text-white shadow-2xl ring-1 ring-white/10"
+            className="flex h-20 w-20 items-center justify-center rounded-2xl bg-yellow-500 text-zinc-950 shadow-2xl ring-1 ring-yellow-400/50"
           >
-            <Grid className="h-10 w-10" />
+            <GraduationCap className="h-10 w-10" />
           </motion.div>
           
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-5xl font-bold tracking-tight text-white mb-2 sm:text-7xl"
+            className="font-display text-5xl font-bold tracking-tight text-white mb-2 sm:text-7xl uppercase"
           >
-            3D 2025/2026<br /><span className="text-neutral-500">TSK Galerija</span>
+            Maturanti <br /><span className="text-yellow-500">3.D</span>
           </motion.h1>
           
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-lg text-neutral-400 sm:text-xl max-w-2xl px-4"
+            className="text-lg text-zinc-400 sm:text-xl max-w-2xl px-4 font-medium leading-relaxed"
           >
-            Pregledajte sve slike i videoprojekte sa raznih događanja okupljene na jednom mjestu.
+            Đabe konji pod haubom kad su magarci za volanom 😉
           </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap gap-3 justify-center mt-2"
+          >
+            <div className="bg-zinc-900 px-4 py-2 rounded-lg border border-zinc-800 flex items-center gap-2 text-sm font-bold text-zinc-300">
+              <Truck className="w-4 h-4 text-yellow-500"/> Vozači motornog vozila
+            </div>
+            <div className="bg-zinc-900 px-4 py-2 rounded-lg border border-zinc-800 flex items-center gap-2 text-sm font-bold text-zinc-300">
+              <Calendar className="w-4 h-4 text-yellow-500"/> Generacija 2025/2026
+            </div>
+          </motion.div>
           
           <motion.button
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={() => document.getElementById('galerija')?.scrollIntoView({ behavior: 'smooth' })}
-            className="mt-6 flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold text-black transition-transform hover:scale-105 active:scale-95"
+            className="mt-6 flex items-center gap-2 rounded-full bg-yellow-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 transition-all hover:bg-yellow-400 hover:shadow-xl hover:shadow-yellow-500/20 hover:-translate-y-0.5 active:scale-95"
           >
-            <span>Pogledaj Galeriju</span>
+            <span>Pregledaj Galeriju</span>
             <ArrowDown className="h-4 w-4" />
           </motion.button>
         </div>
@@ -132,26 +150,26 @@ export default function App() {
         {loading ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <div className="flex flex-col items-center gap-4">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-800 border-t-white"></div>
-              <p className="animate-pulse text-sm text-neutral-500 tracking-widest uppercase">Učitavanje slika...</p>
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-800 border-t-yellow-500"></div>
+              <p className="animate-pulse text-sm text-yellow-500/70 tracking-widest uppercase font-bold">Učitavanje rute...</p>
             </div>
           </div>
         ) : mediaFiles.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex min-h-[50vh] flex-col items-center justify-center rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-center shadow-2xl"
+            className="flex min-h-[50vh] flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/50 p-8 text-center"
           >
-            <div className="mb-6 rounded-full bg-white/5 p-6 ring-1 ring-white/10">
-              <UploadCloud className="h-10 w-10 text-neutral-400" strokeWidth={1.5} />
+            <div className="mb-6 rounded-full bg-zinc-800 p-6 ring-1 ring-zinc-700">
+              <Camera className="h-10 w-10 text-yellow-500" strokeWidth={1.5} />
             </div>
-            <h3 className="mb-2 font-display text-2xl font-medium text-white">Galerija je prazna</h3>
-            <p className="max-w-md text-neutral-400 leading-relaxed text-sm mb-6">
-              Dodajte slike i videe u folder <code className="rounded bg-black/50 px-2 py-1 font-mono text-xs text-neutral-300 border border-white/10">public/slike</code> i osvježite stranicu. Netlify će ih automatski učitati prilikom buildanja!
+            <h3 className="mb-2 font-display text-2xl font-bold text-white uppercase">Knjiga uspomena je prazna</h3>
+            <p className="max-w-md text-zinc-400 leading-relaxed text-sm mb-6 font-medium">
+              Ekipa, dodajte slike sa zadnjeg roštilja, fešte ili vožnje u folder <code className="rounded bg-zinc-950 px-2 py-1 font-mono text-xs text-yellow-500 border border-zinc-800">public/slike</code> i osvježite stranicu. Netlify će ih automatski učitati.
             </p>
             <button
               onClick={loadMedia}
-              className="flex items-center gap-2 rounded-full bg-white text-black px-6 py-3 font-medium hover:bg-neutral-200 transition-colors shadow-lg active:scale-95"
+              className="flex items-center gap-2 rounded-md bg-yellow-500 text-zinc-950 px-6 py-3 font-bold uppercase tracking-wide hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10 active:scale-95"
             >
               <RefreshCw className="h-5 w-5" />
               Osvježi
@@ -166,7 +184,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: (idx % 10) * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="group relative inline-block w-full break-inside-avoid overflow-hidden rounded-2xl bg-neutral-900 cursor-zoom-in border border-white/5 shadow-xl ring-1 ring-black/50"
+                  className="group relative inline-block w-full break-inside-avoid overflow-hidden rounded-xl bg-zinc-900 cursor-zoom-in border border-zinc-800 shadow-xl ring-1 ring-black/50"
                   onClick={() => setSelectedMedia(media)}
                 >
                   {isVideo(media.name) ? (
@@ -184,7 +202,7 @@ export default function App() {
                         }}
                       />
                       <div className="pointer-events-none absolute inset-0 flex items-center justify-center transition-transform group-hover:scale-110">
-                        <div className="rounded-full bg-black/40 p-3 text-white backdrop-blur-md shadow-lg ring-1 ring-white/20">
+                        <div className="rounded-full bg-black/60 p-3 text-yellow-500 backdrop-blur-md shadow-lg ring-1 ring-yellow-500/30">
                           <Video className="h-6 w-6" />
                         </div>
                       </div>
@@ -199,13 +217,13 @@ export default function App() {
                   )}
                   
                   {/* Subtle vignette / hover overlay */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   
                   {/* Download Button */}
                   <div className="absolute bottom-0 right-0 p-4 translate-y-4 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                     <button
                       onClick={(e) => handleDownload(e, media.url, media.name)}
-                      className="group/btn flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md border border-white/20 transition-all hover:bg-white hover:text-black hover:shadow-lg active:scale-95"
+                      className="group/btn z-10 flex h-11 w-11 items-center justify-center rounded-md bg-yellow-500/10 text-yellow-500 backdrop-blur-md border border-yellow-500/20 transition-all hover:bg-yellow-500 hover:text-zinc-950 hover:shadow-lg active:scale-95"
                       title="Preuzmi"
                     >
                       <Download className="h-5 w-5 transition-transform duration-300 group-hover/btn:-translate-y-0.5" />
@@ -226,19 +244,19 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]/95 p-4 backdrop-blur-2xl"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-2xl"
             onClick={() => setSelectedMedia(null)}
           >
             {/* Controls */}
             <div className="absolute top-6 flex w-full max-w-7xl items-center justify-between px-6 z-10 text-white">
-              <span className="font-mono text-xs tracking-widest text-neutral-400 opacity-0 sm:opacity-100 flex items-center gap-2">
-                {isVideo(selectedMedia.name) ? <Video className="h-4 w-4" /> : <ImageIcon className="h-4 w-4" />}
+              <span className="font-mono text-xs tracking-widest text-zinc-500 opacity-0 sm:opacity-100 flex items-center gap-2 uppercase">
+                {isVideo(selectedMedia.name) ? <Video className="h-4 w-4 text-yellow-500" /> : <ImageIcon className="h-4 w-4 text-yellow-500" />}
                 {selectedMedia.name}
               </span>
               <div className="flex items-center gap-3">
                 <button
                   onClick={(e) => handleDownload(e, selectedMedia.url, selectedMedia.name)}
-                  className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 py-2.5 px-6 font-medium backdrop-blur-md transition-all hover:bg-white hover:text-black active:scale-95"
+                  className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/80 py-2.5 px-6 font-bold uppercase tracking-wider backdrop-blur-md transition-all hover:border-yellow-500 hover:text-yellow-500 active:scale-95"
                 >
                   <Download className="h-4 w-4" />
                   <span className="text-sm">Preuzmi</span>
@@ -248,7 +266,7 @@ export default function App() {
                     e.stopPropagation();
                     setSelectedMedia(null);
                   }}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/10 backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105 active:scale-95"
+                  className="flex h-11 w-11 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/80 backdrop-blur-md transition-all hover:border-red-500 hover:text-red-500 hover:scale-105 active:scale-95"
                   title="Zatvori"
                 >
                   <X className="h-5 w-5" />
